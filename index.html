@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Vinny Ji! ✨</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #121016;
+      color: #f3f4f6;
+      overflow-x: hidden;
+    }
+
+    .font-serif-title { font-family: 'Playfair Display', serif; }
+    .font-cute { font-family: 'Fredoka', cursive; }
+
+    /* Custom Glassmorphic Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Gradient Text Glow */
+    .text-glow {
+      background: linear-gradient(135deg, #ff7eb3, #ff758c, #feb47b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pin-btn {
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .pin-btn:active {
+      transform: scale(0.88);
+    }
+
+    /* Keypad Pin Dots */
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #ff758c;
+      transition: background 0.3s ease;
+    }
+    .dot.filled {
+      background: #ff758c;
+      box-shadow: 0 0 10px #ff758c;
+    }
+
+    /* Candle Flame Animation */
+    .flame {
+      width: 18px;
+      height: 30px;
+      background: linear-gradient(to top, #ff7e5f, #feb47b, #fff);
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 15px #feb47b, 0 0 25px #ff7e5f;
+      animation: flicker 0.1s infinite alternate;
+      cursor: pointer;
+    }
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
+      100% { transform: scale(1.08) rotate(1deg); opacity: 1; }
+    }
+
+    /* Hide step pages by default */
+    .page-step {
+      display: none;
+      opacity: 0;
+    }
+    .page-step.active {
+      display: flex;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
+
+  <!-- Floating Background Lights -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+  </div>
+
+  <main class="w-full max-w-xl z-10 my-auto">
+
+    <!-- PAGE 1: PASSCODE LOCK PAGE -->
+    <section id="page-1" class="page-step active flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-8 w-full max-w-sm border border-pink-500/20 page-card">
+        <div class="w-16 h-16 bg-pink-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-pink-400 text-2xl shadow-inner">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h1 class="text-2xl font-bold font-cute text-glow mb-1">Enter Secret Pin</h1>
+        <p class="text-xs text-gray-400 mb-6">Enter the 4-digit code to unlock Vinny's Birthday Surprise ✨</p>
+
+        <!-- Pin Dots -->
+        <div id="pin-dots" class="flex justify-center gap-4 mb-8">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+
+        <p id="pin-error" class="text-xs text-red-400 mb-4 h-4 opacity-0 font-semibold">Galat Pin! Dubara try karo 😅</p>
+
+        <!-- Keypad -->
+        <div class="grid grid-cols-3 gap-3 max-w-[240px] mx-auto">
+          <button onclick="pressNum('1')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">1</button>
+          <button onclick="pressNum('2')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">2</button>
+          <button onclick="pressNum('3')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">3</button>
+          <button onclick="pressNum('4')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">4</button>
+          <button onclick="pressNum('5')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">5</button>
+          <button onclick="pressNum('6')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">6</button>
+          <button onclick="pressNum('7')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">7</button>
+          <button onclick="pressNum('8')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">8</button>
+          <button onclick="pressNum('9')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">9</button>
+          <button onclick="clearPin()" class="pin-btn h-12 rounded-xl glass-card text-xs text-gray-400 font-bold hover:bg-white/10">CLR</button>
+          <button onclick="pressNum('0')" class="pin-btn h-12 rounded-xl glass-card text-lg font-bold hover:bg-white/10">0</button>
+          <button onclick="deletePin()" class="pin-btn h-12 rounded-xl glass-card text-sm text-pink-400 font-bold hover:bg-white/10"><i class="fa-solid fa-backspace"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: CONFIRMATION MODAL PAGE -->
+    <section id="page-2" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-8 w-full max-w-sm text-center page-card">
+        <div class="text-5xl mb-4 animate-bounce">🎁</div>
+        <h2 class="text-2xl font-bold font-cute text-pink-300 mb-2">Surprise Ready Hai!</h2>
+        <p class="text-sm text-gray-300 mb-6">Kya aap aage ke pages dekhna chahte ho? 🤔</p>
+
+        <div class="flex gap-4 justify-center">
+          <button onclick="goToPage(3)" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 font-semibold shadow-lg shadow-pink-500/30 hover:scale-105 transition">Haan Bilkul! ✨</button>
+          <button id="no-btn" onclick="handleNoClick()" class="px-6 py-2.5 rounded-full glass-card hover:bg-white/10 transition">Nahi 😜</button>
+        </div>
+        <p id="no-msg" class="text-xs text-pink-400 mt-4 h-4 opacity-0">Itni aasani se 'NO' nahi bol sakti! Phir se 'YES' dabao 😂</p>
+      </div>
+    </section>
+
+    <!-- PAGE 3: MAIN WELCOME / GREETING -->
+    <section id="page-3" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-8 w-full text-center relative overflow-hidden page-card">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-2 border-pink-400/50 p-1 mb-4 shadow-xl">
+          <img src="825261230_2392414798174409_4860811232934665661_n.jpg" alt="Vinny" class="w-full h-full object-cover rounded-full">
+        </div>
+        <h1 class="text-xl font-bold font-cute text-glow mb-3 leading-snug">
+          happy birthday to mine vinny ji aaj ka din tumhra acha jayaa ❤️
+        </h1>
+        <p class="text-sm text-gray-300 mb-6 leading-relaxed">
+          Yeh chota sa digital gift sirf tumhare chehre par ek pyaari si smile laane ke liye hai! 🌸
+        </p>
+        <button onclick="goToPage(4)" class="px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 font-bold shadow-lg shadow-pink-500/30 hover:scale-105 transition">
+          Next Page <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- PAGE 4: YOURS BEAUTIFUL MEMORIES (COLLAGE) -->
+    <section id="page-4" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-6 w-full page-card">
+        <h2 class="text-2xl font-bold font-cute text-glow mb-1 text-center">yours beautiful memories</h2>
+        <p class="text-xs text-gray-400 mb-6 text-center">your memories</p>
+
+        <!-- Aesthetic Photo Collage with Animation Targets -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <div class="memory-photo h-40 rounded-2xl overflow-hidden border border-white/10 shadow-md">
+            <img src="825261347_1060432810315379_6022110138051686050_n.jpg" class="w-full h-full object-cover">
+          </div>
+          <div class="memory-photo h-40 rounded-2xl overflow-hidden border border-white/10 shadow-md">
+            <img src="825310069_1600451721573624_5803458473719279329_n.jpg" class="w-full h-full object-cover">
+          </div>
+          <div class="memory-photo h-40 rounded-2xl overflow-hidden border border-white/10 shadow-md">
+            <img src="825310974_1833501321112533_3975488551169952048_n.jpg" class="w-full h-full object-cover">
+          </div>
+          <div class="memory-photo h-40 rounded-2xl overflow-hidden border border-white/10 shadow-md">
+            <img src="829169476_4495127087425652_189258587587679075_n.jpg" class="w-full h-full object-cover">
+          </div>
+        </div>
+
+        <button onclick="goToPage(5)" class="px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 font-bold shadow-lg shadow-pink-500/30 hover:scale-105 transition">
+          Aage Badho <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- PAGE 5: FACT ABOUT YOU -->
+    <section id="page-5" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-6 w-full page-card">
+        <h2 class="text-2xl font-bold font-cute text-pink-300 mb-1">fact about you</h2>
+        <p class="text-xs text-gray-400 mb-6">yeh baatien mujhe jo lagti ha tera bara maii</p>
+
+        <div class="space-y-3 text-left mb-6">
+          <div class="fact-item glass-card p-4 rounded-2xl border-l-4 border-pink-400 flex items-center gap-3">
+            <span class="text-xl">🤫</span>
+            <p class="text-sm font-medium text-gray-200">Gossip karna class maii jab teacher padh rahi hoo</p>
+          </div>
+          <div class="fact-item glass-card p-4 rounded-2xl border-l-4 border-purple-400 flex items-center gap-3">
+            <span class="text-xl">😂</span>
+            <p class="text-sm font-medium text-gray-200">apna dosto ka maja lena</p>
+          </div>
+          <div class="fact-item glass-card p-4 rounded-2xl border-l-4 border-rose-400 flex items-center gap-3">
+            <span class="text-xl">🎵</span>
+            <p class="text-sm font-medium text-gray-200">your favorite song is Wadiyan 🎶</p>
+          </div>
+          <div class="fact-item glass-card p-4 rounded-2xl border-l-4 border-yellow-400 flex items-center gap-3">
+            <span class="text-xl">⚡</span>
+            <p class="text-sm font-medium text-gray-200">class ka beach mai blinkit karna 😂</p>
+          </div>
+          <div class="fact-item glass-card p-4 rounded-2xl border-l-4 border-blue-400 flex items-center gap-3">
+            <span class="text-xl">👑</span>
+            <p class="text-sm font-medium text-gray-200">zero attitude queen</p>
+          </div>
+        </div>
+
+        <button onclick="goToPage(6)" class="px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 font-bold shadow-lg shadow-pink-500/30 hover:scale-105 transition">
+          Next Magic <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- PAGE 6: HER QUALITIES -->
+    <section id="page-6" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-6 w-full page-card">
+        <h2 class="text-2xl font-bold font-cute text-glow mb-1">What Makes You Special ✨</h2>
+        <p class="text-xs text-gray-400 mb-6">Tu sach me ek rare personality hai!</p>
+
+        <div class="grid grid-cols-1 gap-4 text-left mb-6">
+          <div class="quality-card glass-card p-4 rounded-2xl border border-white/10">
+            <h3 class="font-bold text-pink-300 text-sm mb-1">💖 Super Kind Heart</h3>
+            <p class="text-xs text-gray-300">Sabki help karna aur bina kisi matlab ke sabka khayal rakhna teri best quality hai.</p>
+          </div>
+          <div class="quality-card glass-card p-4 rounded-2xl border border-white/10">
+            <h3 class="font-bold text-purple-300 text-sm mb-1">🌟 Pure Vibes Only</h3>
+            <p class="text-xs text-gray-300">Jab tu saath hoti hai toh maahol apne aap khushgawar ho jata hai!</p>
+          </div>
+          <div class="quality-card glass-card p-4 rounded-2xl border border-white/10">
+            <h3 class="font-bold text-yellow-300 text-sm mb-1">😄 Brightens Any Room</h3>
+            <p class="text-xs text-gray-300">Teri smile aur sense of humor sabka mood palat deti hai!</p>
+          </div>
+          <div class="quality-card glass-card p-4 rounded-2xl border border-white/10">
+            <h3 class="font-bold text-emerald-300 text-sm mb-1">🌸 Truly Unapologetic & Genuine</h3>
+            <p class="text-xs text-gray-300">Aap bilkul original ho, kisi ke liye fake personality nahi dikhati.</p>
+          </div>
+        </div>
+
+        <button onclick="goToPage(7)" class="px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 font-bold shadow-lg shadow-pink-500/30 hover:scale-105 transition">
+          Letter Padho <i class="fa-solid fa-envelope ml-2"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- PAGE 7: HEARTFELT LETTER -->
+    <section id="page-7" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-6 w-full text-left relative page-card">
+        <h2 class="text-2xl font-bold font-cute text-pink-300 text-center mb-4">Dil Se Letter 💌</h2>
+        <div class="letter-content space-y-3 text-xs text-gray-300 leading-relaxed max-h-64 overflow-y-auto pr-2">
+          <p>Dear Vinny,</p>
+          <p>Happy Birthday! Zindagi me bohot se log aate hain aur jaate hain, lekin kuch log aate hi dil me ek khaas jagah bana lete hain.</p>
+          <p>Tere saath bitaya har ek moment hamesha yaadgaar rehta hai. Chahe class me bakchodi ho ya serious baatein, tu hamesha best rahi hai.</p>
+          <p>Aaj ke din bas yahi wish hai ki tu hamesha hasti rahe aur jo bhi sapne dekhe hain, woh sab poore ho jayein!</p>
+        </div>
+        <p class="letter-footer text-xs font-bold text-pink-400 mt-4 text-right">i hope kii tu meri bestie raha ha always ❤️</p>
+
+        <div class="text-center mt-6">
+          <button onclick="goToPage(9)" class="px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 font-bold shadow-lg shadow-pink-500/30 hover:scale-105 transition">
+            Special Shayari <i class="fa-solid fa-heart ml-2"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 9: SHAYARI PAGE -->
+    <section id="page-9" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-6 w-full text-center page-card">
+        <h2 class="text-2xl font-bold font-cute text-glow mb-4">A Special Shayari For You ✍️</h2>
+
+        <div class="space-y-4 max-h-72 overflow-y-auto pr-1 text-xs sm:text-sm text-pink-200 font-serif-title italic leading-relaxed">
+          
+          <div class="shayari-card glass-card p-4 rounded-2xl border border-pink-500/20">
+            Ek mahina hi toh hua hai tujhe jaane,<br>
+            Par lagta hai jaise saalon se hain puraane.<br>
+            Kuch log waqt ke saath apne bante hain,<br>
+            Aur kuch… pehli mulaqat se hi dil ke kareeb lagte hain. ❤️
+          </div>
+
+          <div class="shayari-card glass-card p-4 rounded-2xl border border-pink-500/20">
+            Kuch log zindagi mein der se aate hain,<br>
+            Par aate hi dil ke kareeb ho jaate hain.<br>
+            Teri dosti bhi kuch aisi hi hai,<br>
+            Kam waqt mein hi bahut khaas ban gayi hai.
+          </div>
+
+          <div class="shayari-card glass-card p-4 rounded-2xl border border-pink-500/20">
+            Har baat share karne ka mann karta hai,<br>
+            Tujhse baat na ho toh kuch missing sa lagta hai.<br>
+            Shayad dosti ka matlab yahi hota hai,<br>
+            Jahan bina kahe bhi saamne wala samajh leta hai.
+          </div>
+
+          <div class="shayari-card glass-card p-4 rounded-2xl border border-pink-500/20">
+            Kuch feelings lafzon mein kehna mushkil hota hai,<br>
+            Kuch logon ka khaas hona bas mehsoos hota hai.<br>
+            Tu mere liye kya hai, shayad bata na paun,<br>
+            Par itna zaroor hai… tujhe kabhi khona nahi chahta.
+          </div>
+
+        </div>
+
+        <button onclick="goToPage(10)" class="mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 font-bold shadow-lg shadow-pink-500/30 hover:scale-105 transition">
+          Final Cake Reveal 🎂
+        </button>
+      </div>
+    </section>
+
+    <!-- PAGE 10: CANDLE FINALE -->
+    <section id="page-10" class="page-step flex-col items-center justify-center text-center py-6">
+      <div class="glass-card rounded-3xl p-8 w-full text-center relative page-card">
+        <h2 class="text-2xl font-bold font-cute text-pink-300 mb-2">Make A Wish & Blow Candle! 🎂</h2>
+        <p class="text-xs text-gray-400 mb-8">Candle ki flame par click karo bujhane ke liye!</p>
+
+        <!-- Cake Artwork -->
+        <div class="relative w-40 h-40 mx-auto mb-8 flex flex-col items-center justify-end">
+          <!-- Flame -->
+          <div id="candle-flame" onclick="blowCandle()" class="flame mb-1"></div>
+          <!-- Candle Stick -->
+          <div class="w-3 h-10 bg-gradient-to-b from-yellow-200 to-pink-400 rounded-sm"></div>
+          <!-- Cake Top Layer -->
+          <div class="w-28 h-10 bg-pink-400 rounded-t-2xl border-b-4 border-pink-500 shadow-md"></div>
+          <!-- Cake Bottom Layer -->
+          <div class="w-36 h-12 bg-purple-500 rounded-t-xl border-b-4 border-purple-600 shadow-lg"></div>
+        </div>
+
+        <!-- Popup Message after blowing candle -->
+        <div id="wish-popup" class="hidden glass-card p-4 rounded-2xl border border-pink-400/40 mb-6">
+          <p class="text-lg font-bold font-cute text-glow">
+            happy birthday to my bestie Vinny once again ❤️🎉
+          </p>
+        </div>
+
+        <p class="text-xs text-gray-400">Created with ❤️ for Vinny</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript Logic -->
+  <script>
+    let currentPin = "";
+    const correctPin = "2909";
+
+    // Keypad Logic
+    function pressNum(num) {
+      if (currentPin.length < 4) {
+        currentPin += num;
+        updateDots();
+      }
+      if (currentPin.length === 4) {
+        setTimeout(checkPin, 200);
+      }
+    }
+
+    function deletePin() {
+      currentPin = currentPin.slice(0, -1);
+      updateDots();
+    }
+
+    function clearPin() {
+      currentPin = "";
+      updateDots();
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        if (idx < currentPin.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
+      });
+    }
+
+    function checkPin() {
+      if (currentPin === correctPin) {
+        goToPage(2);
+      } else {
+        const errorMsg = document.getElementById('pin-error');
+        errorMsg.style.opacity = '1';
+        gsap.to('#pin-dots', { x: 10, repeat: 5, yoyo: true, duration: 0.05, onComplete: () => {
+          gsap.set('#pin-dots', { x: 0 });
+        }});
+        setTimeout(() => {
+          clearPin();
+          errorMsg.style.opacity = '0';
+        }, 1500);
+      }
+    }
+
+    // Custom GSAP Transitions per Page
+    function goToPage(pageNum) {
+      document.querySelectorAll('.page-step').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      const targetPage = document.getElementById(`page-${pageNum}`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+
+        // Distinct animations for each page
+        if (pageNum === 3) {
+          // Page 3: Zoom and Glow effect
+          gsap.fromTo(targetPage, 
+            { opacity: 0, scale: 0.7, rotate: -3 }, 
+            { opacity: 1, scale: 1, rotate: 0, duration: 0.8, ease: "back.out(1.7)" }
+          );
+        } else if (pageNum === 4) {
+          // Page 4: Slide up entry + Sequential one-by-one popup for photos
+          gsap.fromTo(targetPage, 
+            { opacity: 0, y: 50 }, 
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+          );
+          gsap.fromTo('.memory-photo', 
+            { opacity: 0, scale: 0.3, y: 30, rotation: 5 }, 
+            { opacity: 1, scale: 1, y: 0, rotation: 0, duration: 0.5, stagger: 0.2, ease: "back.out(1.5)", delay: 0.2 }
+          );
+        } else if (pageNum === 5) {
+          // Page 5: Slide in facts from the left one by one
+          gsap.fromTo(targetPage, 
+            { opacity: 0 }, 
+            { opacity: 1, duration: 0.4 }
+          );
+          gsap.fromTo('.fact-item', 
+            { opacity: 0, x: -60 }, 
+            { opacity: 1, x: 0, duration: 0.4, stagger: 0.15, ease: "power3.out", delay: 0.1 }
+          );
+        } else if (pageNum === 6) {
+          // Page 6: Flip in quality cards from top
+          gsap.fromTo(targetPage, 
+            { opacity: 0, y: -30 }, 
+            { opacity: 1, y: 0, duration: 0.5 }
+          );
+          gsap.fromTo('.quality-card', 
+            { opacity: 0, rotationX: -90, y: -20 }, 
+            { opacity: 1, rotationX: 0, y: 0, duration: 0.5, stagger: 0.12, ease: "power2.out", delay: 0.1 }
+          );
+        } else if (pageNum === 7) {
+          // Page 7: Envelope-style letter reveal
+          gsap.fromTo(targetPage, 
+            { opacity: 0, scale: 0.8, y: 40 }, 
+            { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "power2.out" }
+          );
+          gsap.fromTo('.letter-content p', 
+            { opacity: 0, y: 15 }, 
+            { opacity: 1, y: 0, duration: 0.4, stagger: 0.12, delay: 0.2 }
+          );
+        } else if (pageNum === 9) {
+          // Page 9: Floating fade-in for Shayari cards
+          gsap.fromTo(targetPage, 
+            { opacity: 0, scale: 0.9 }, 
+            { opacity: 1, scale: 1, duration: 0.5 }
+          );
+          gsap.fromTo('.shayari-card', 
+            { opacity: 0, y: 30, scale: 0.95 }, 
+            { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.2, ease: "back.out(1.2)", delay: 0.1 }
+          );
+        } else if (pageNum === 10) {
+          // Page 10: Bounce effect for Finale
+          gsap.fromTo(targetPage, 
+            { opacity: 0, scale: 0.8 }, 
+            { opacity: 1, scale: 1, duration: 0.6, ease: "bounce.out" }
+          );
+        } else {
+          // Standard transition for other pages
+          gsap.fromTo(targetPage, 
+            { opacity: 0, scale: 0.85, y: 30 }, 
+            { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.4)" }
+          );
+        }
+      }
+    }
+
+    // Handle "No" Click on Page 2
+    function handleNoClick() {
+      const msg = document.getElementById('no-msg');
+      msg.style.opacity = '1';
+      gsap.to('#no-btn', { x: (Math.random() - 0.5) * 60, y: (Math.random() - 0.5) * 40, duration: 0.2 });
+    }
+
+    // Candle Blowing Finale
+    function blowCandle() {
+      const flame = document.getElementById('candle-flame');
+      flame.style.display = 'none';
+
+      // Show Popup Message with Animation
+      const popup = document.getElementById('wish-popup');
+      popup.classList.remove('hidden');
+      gsap.fromTo(popup, 
+        { opacity: 0, scale: 0.5, y: -20 }, 
+        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" }
+      );
+
+      // Trigger Confetti
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+
+      setTimeout(() => {
+        confetti({
+          particleCount: 80,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 80,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+      }, 300);
+    }
+
+    // Initial Load Animation for Lock Screen
+    window.addEventListener('DOMContentLoaded', () => {
+      goToPage(1);
+    });
+  </script>
+</body>
+</html>
